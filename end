@@ -1,0 +1,38 @@
+[1mdiff --git a/src/CodeSection.jsx b/src/CodeSection.jsx[m
+[1mindex b7a2bae..fed43b4 100644[m
+[1m--- a/src/CodeSection.jsx[m
+[1m+++ b/src/CodeSection.jsx[m
+[36m@@ -31,4 +31,6 @@[m [mfunction CodeSection(props){[m
+     </div>[m
+   );[m
+ }[m
+[31m-export default CodeSection;[m
+\ No newline at end of file[m
+[32m+[m[32mexport default CodeSection;[m
+[32m+[m
+[32m+[m[32m//[m
+\ No newline at end of file[m
+[1mdiff --git a/src/answers.jsx b/src/answers.jsx[m
+[1mindex 6a247d8..c33a8b7 100644[m
+[1m--- a/src/answers.jsx[m
+[1m+++ b/src/answers.jsx[m
+[36m@@ -102,7 +102,7 @@[m [mconst ans=[[m
+                 print("")[m
+                 print("  | ")[m
+                 print("  | ")[m
+[31m-                print(" \\\'/ \n")[m
+[32m+[m[32m                print(" \\\ \n")[m[41m[m
+                 for i in cur.data:[m
+                     for j in i:[m
+                         print(j,end=" ")[m
+[36m@@ -239,7 +239,9 @@[m [mconst ans=[[m
+     {[m
+         id:4,[m
+         name:"ID 3",[m
+[31m-        code:`import numpy as np[m
+[32m+[m[32m        code:[m[41m[m
+[32m+[m[32m        `[m[41m[m
+[32m+[m[32m        import numpy as np[m[41m[m
+         import matplotlib.pyplot as plt[m
+         import pandas as pd[m
+         import math[m

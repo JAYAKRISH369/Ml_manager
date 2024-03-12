@@ -10,7 +10,7 @@
     background-color: #E2BFB3;
     padding: 10px;
 }
-.Code{
+.Code,pre{
     background-color: #F7DED0;
     padding: 10px;
 }

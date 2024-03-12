@@ -102,7 +102,7 @@ const ans=[
                 print("")
                 print("  | ")
                 print("  | ")
-                print(" \\\'/ \n")
+                print(" \\ \n")
                 for i in cur.data:
                     for j in i:
                         print(j,end=" ")
@@ -239,7 +239,9 @@ const ans=[
     {
         id:4,
         name:"ID 3",
-        code:`import numpy as np
+        code:
+        `
+        import numpy as np
         import matplotlib.pyplot as plt
         import pandas as pd
         import math
