@@ -1,5 +1,5 @@
 import React from "react";
-import  ReactDOM from "react-dom";
+import  ReactDOM from "react-dom/client";
 import CreateSection from "./CreateSection.jsx"
 import ans from "./answers.jsx";
 import Footer from "./Footer.jsx"

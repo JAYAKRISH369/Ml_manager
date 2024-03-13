@@ -93,7 +93,7 @@ class Puzzle:
             print("")
             print("  | ")
             print("  | ")
-            print(" \\\'/ \n")
+            print("  \n")
             for i in cur.data:
                 for j in i:
                     print(j,end=" ")
