@@ -602,5 +602,75 @@ plt.plot(x,y,"r.")
 plt.plot(x,yest,"b-")
             `
     },
+
+    {
+        id:11,
+        name:"Reinforcement learning",
+        code:
+            `
+import numpy as np
+
+# Define the environment
+num_states = 16  # 4x4 grid world
+num_actions = 4  # Up, Down, Left, Right
+
+# Define rewards
+rewards = np.array([
+    [-1, -1, -1, -1],
+    [-1, -1, -1, -1],
+    [-1, -1, -1, -1],
+    [-1, -1, -1, 10]  # Goal
+])
+
+# Initialize Q-table
+q_table = np.zeros((num_states, num_actions))
+
+# Q-learning parameters
+learning_rate = 0.1
+discount_factor = 0.9
+epsilon = 0.1
+num_episodes = 1000
+
+# Q-learning algorithm
+for _ in range(num_episodes):
+    state = np.random.randint(num_states)  # Start from a random state
+    done = False
+    while not done:
+        if np.random.uniform(0, 1) < epsilon:
+            action = np.random.randint(num_actions)  # Explore
+        else:
+            action = np.argmax(q_table[state, :])  # Exploit
+        next_state = (state + 1) % num_states  # Transition to the next state
+        reward = rewards[state // 4, state % 4]  # Get reward for current state
+        td_target = reward + discount_factor * np.max(q_table[next_state, :])
+        td_error = td_target - q_table[state, action]
+        q_table[state, action] += learning_rate * td_error
+        state = next_state
+        if state == num_states - 1:
+            done = True  # Reach the goal
+
+# Print the Q-table
+print("Q-table:")
+print(q_table)
+Output:-
+Q-table:
+[[-4.30764886 -4.34526171 -4.27717315 -4.24629038]
+ [-5.10934044 -5.12344014 -5.13475503 -5.09231924]
+ [-5.19451637 -5.18526543 -5.18975503 -5.1801919 ]
+ [-4.84844681 -4.85088354 -4.85339653 -4.84609087]
+ [-4.38130841 -4.37724992 -4.38029991 -4.37473515]
+ [-3.86030887 -3.84894803 -3.85406445 -3.85567246]
+ [-3.26004406 -3.2620831  -3.25881389 -3.26336458]
+ [-2.6152579  -2.56339374 -2.56430277 -2.69168446]
+ [-1.94885696 -1.75472498 -1.75555852 -2.03511037]
+ [-0.85351308 -1.08091911 -1.14007021 -1.17408584]
+ [ 0.14959735  0.08800495  0.1459172   0.14737062]
+ [ 1.00441351  1.08728091  1.13885237  1.2263308 ]
+ [ 2.36983766  1.86767362  2.44918668  2.25505152]
+ [ 3.53792478  3.67915995  3.80305221  3.8088476 ]
+ [ 5.26654504  5.29792284  4.99261656  5.26310616]
+ [ 6.9917463   1.52731226  0.70265248  3.05639013]]
+            `
+    }
 ]
 export default ans;
