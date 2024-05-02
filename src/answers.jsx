@@ -451,6 +451,156 @@ print("\nFinal General_h:", g_final, sep="\n")
         final_solution = hill_climbing(coordinate)
         print("The solution is \n", final_solution[1])        
         `
+    },
+    {
+        id:7,
+        name:"5-fold cross validation",
+        code:
+            `
+from sklearn import datasets
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.model_selection import KFold, cross_val_score
+
+X, y = datasets.load_iris(return_X_y=True)
+
+clf = DecisionTreeClassifier(random_state=42)
+
+k_folds = KFold(n_splits = 5)
+
+scores = cross_val_score(clf, X, y, cv = k_folds)
+
+print("Cross Validation Scores: ", scores)
+print("Average CV Score: ", scores.mean())
+print("Number of CV Scores used in Average: ", len(scores))
+            `
+    },
+
+    {
+        id:8,
+        name:"knn without csv file",
+        code:
+            `
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import accuracy_score
+from sklearn.metrics import classification_report
+from sklearn.model_selection import train_test_split
+from sklearn.datasets import load_iris
+import numpy as np
+dataset=load_iris()
+X_train,X_test,y_train,y_test=train_test_split(dataset["data"],dataset["target"],random_state=0)
+classifier=KNeighborsClassifier(n_neighbors=8,p=3,metric='euclidean')
+classifier.fit(X_train,y_train)
+#predict the test resuts
+y_pred=classifier.predict(X_test)
+cm=confusion_matrix(y_test,y_pred)
+print('Confusion matrix is as follows\n',cm)
+print('Accuracy Metrics')
+print(classification_report(y_test,y_pred))
+print(" correct predication",accuracy_score(y_test,y_pred))
+print(" wrong predication",(1-accuracy_score(y_test,y_pred)))
+            `
+    },
+
+    {
+        id:9,
+        name:"non-parametric regression",
+        code:
+            `
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+import sklearn
+from math import exp,sqrt,pi
+
+def f(x):
+    return 3*np.cos(x/2) + x**2/5 + 3
+
+def fit(test_X, train_X, train_y, bandwidth=1.0, kn='box'):
+    kernels = {
+        'box': lambda x: 1/2 if (x<=1 and x>=-1) else 0,
+        'gs': lambda x: 1/sqrt(2*pi)exp(-x*2/2),
+        'ep': lambda x: 3/4*(1-x**2) if (x<=1 and x>=-1) else 0
     }
+    predict_y = []
+    for entry in test_X:
+        nks = [np.sum((j-entry)**2)/bandwidth for j in train_X]
+        ks = [kernels['box'](i) for i in nks]
+        dividend = sum([ks[i]*train_y[i] for i in range(len(ks))])
+        divisor = sum(ks)
+        predict = dividend/divisor
+        predict_y.extend(predict)
+        # print(entry)
+    return np.array(predict_y)
+
+plt.style.use('ggplot')
+
+a = np.linspace(0, 9.9, 200)
+
+train_a = a[:,np.newaxis]
+# noise = np.random.normal(0, 0.5, 200)
+# e = noise[:,np.newaxis]
+b = f(train_a) + 2*np.random.randn(*train_a.shape)
+test_a = np.linspace(1,4.8,20)
+formed_a = test_a[:,np.newaxis]
+
+pred_b = fit(train_a,train_a,b,0.3,'gs')
+plt.scatter(train_a,b,color='black')
+
+
+plt.scatter(train_a, pred_b, color='red', linewidth = 0.1)
+
+train_a.size, b.size
+
+pred_b = fit(train_a,train_a,b,0.3,'gs')
+plt.scatter(train_a,b,color='black')
+
+
+plt.scatter(train_a, pred_b, color='red', linewidth = 0.1)
+            `
+    },
+    {
+        id:10,
+        name:"non-parametric regression-2",
+        code:
+            `
+from math import ceil
+import numpy as np
+from scipy import linalg
+def lowess(x, y, f, iterations):
+    n = len(x)
+    r = int(ceil(f * n))
+    h = [np.sort(np.abs(x - x[i]))[r] for i in range(n)]
+    w = np.clip(np.abs((x[:, None] - x[None, :]) / h), 0.0, 1.0)
+    w = (1 - w ** 3) ** 3
+    yest = np.zeros(n)
+    delta = np.ones(n)
+    for iteration in range(iterations):
+        for i in range(n):
+            weights = delta * w[:, i]
+            b = np.array([np.sum(weights * y), np.sum(weights * y * x)])
+            A = np.array([[np.sum(weights), np.sum(weights * x)],[np.sum(weights * x), np.sum(weights * x * x)]])
+            beta = linalg.solve(A, b)
+            yest[i] = beta[0] + beta[1] * x[i]
+
+        residuals = y - yest
+        s = np.median(np.abs(residuals))
+        delta = np.clip(residuals / (6.0 * s), -1, 1)
+        delta = (1 - delta ** 2) ** 2
+
+    return yest
+import math
+n = 100
+x = np.linspace(0, 2 * math.pi, n)
+y = np.sin(x) + 0.3 * np.random.randn(n)
+f =0.25
+iterations=3
+yest = lowess(x, y, f, iterations)
+    
+import matplotlib.pyplot as plt
+plt.plot(x,y,"r.")
+plt.plot(x,yest,"b-")
+            `
+    },
 ]
 export default ans;
