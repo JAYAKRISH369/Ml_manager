@@ -652,6 +652,8 @@ for _ in range(num_episodes):
 # Print the Q-table
 print("Q-table:")
 print(q_table)
+
+--------------------------------------------------
 Output:-
 Q-table:
 [[-4.30764886 -4.34526171 -4.27717315 -4.24629038]
@@ -671,6 +673,328 @@ Q-table:
  [ 5.26654504  5.29792284  4.99261656  5.26310616]
  [ 6.9917463   1.52731226  0.70265248  3.05639013]]
             `
-    }
+    },
+    {
+        id:12,
+        name:"K means",
+        code:
+            `
+from sklearn.cluster import KMeans
+from sklearn import preprocessing
+from sklearn.mixture import GaussianMixture
+from sklearn.datasets import load_iris
+import sklearn.metrics as sm
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+dataset=load_iris()
+
+X=pd.DataFrame(dataset.data)
+X.columns=['Sepal_Length','Sepal_Width','Petal_Length','Petal_Width']
+y=pd.DataFrame(dataset.target)
+y.columns=['Targets']
+
+
+plt.figure(figsize=(14,7))
+colormap=np.array(['red','lime','black'])
+
+plt.subplot(1,3,1)
+plt.scatter(X.Petal_Length,X.Petal_Width,c=colormap[y.Targets],s=40)
+plt.title('Real')
+
+plt.subplot(1,3,2)
+model=KMeans(n_clusters=3)
+model.fit(X)
+predY=np.choose(model.labels_,[0,1,2]).astype(np.int64)
+plt.scatter(X.Petal_Length,X.Petal_Width,c=colormap[predY],s=40)
+plt.title('KMeans')
+scaler=preprocessing.StandardScaler()
+scaler.fit(X)
+xsa=scaler.transform(X)
+xs=pd.DataFrame(xsa,columns=X.columns)
+gmm=GaussianMixture(n_components=3)
+gmm.fit(xs)
+y_cluster_gmm=gmm.predict(xs)
+plt.subplot(1,3,3)
+plt.scatter(X.Petal_Length,X.Petal_Width,c=colormap[y_cluster_gmm],s=40)
+plt.title('GMM Classification')
+            `
+    },
+    {
+        id:13,
+        name:"Bayesian networks",
+        code:
+            `
+!pip install pgmpy
+
+
+import pandas as pd
+data=pd.read_csv("/content/drive/MyDrive/heartdisease.csv")
+heart_disease=pd.DataFrame(data)
+print(heart_disease)
+
+from pgmpy.models import BayesianNetwork
+model=BayesianNetwork([
+('age','Lifestyle'),
+('Gender','Lifestyle'),
+('Family','heartdisease'),
+('diet','cholestrol'),
+('Lifestyle','diet'),
+('cholestrol','heartdisease'),
+('diet','cholestrol')
+])
+
+from pgmpy.estimators import MaximumLikelihoodEstimator
+model.fit(heart_disease, estimator=MaximumLikelihoodEstimator)
+
+from pgmpy.inference import VariableElimination
+HeartDisease_infer = VariableElimination(model)
+
+print('For age Enter { SuperSeniorCitizen:0, SeniorCitizen:1, MiddleAged:2, Youth:3, Teen:4 }')
+print('For Gender Enter { Male:0, Female:1 }')
+print('For Family History Enter { yes:1, No:0 }')
+print('For diet Enter { High:0, Medium:1 }')
+print('For lifeStyle Enter { Athlete:0, Active:1, Moderate:2, Sedentary:3 }')
+print('For cholesterol Enter { High:0, BorderLine:1, Normal:2 }')
+
+q = HeartDisease_infer.query(variables=['heartdisease'], evidence={
+    'age':int(input('Enter age :')),
+    'Gender':int(input('Enter Gender :')),
+    'Family':int(input('Enter Family history :')),
+    'diet':int(input('Enter diet :')),
+    'Lifestyle':int(input('Enter Lifestyle :')),
+    'cholestrol':int(input('Enter cholestrol :'))
+    })
+
+print(q.marginalize(['heartdisease']))
+
+
+--------------------------------------------------------------------------------
+
+output:
+
+    age  Gender  Family  diet  Lifestyle  cholestrol  heartdisease
+0     0       0       1     1          3           0             1
+1     0       1       1     1          3           0             1
+2     1       0       0     0          2           1             1
+3     4       0       1     1          3           2             0
+4     3       1       1     0          0           2             0
+5     2       0       1     1          1           0             1
+6     4       0       1     0          2           0             1
+7     0       0       1     1          3           0             1
+8     3       1       1     0          0           2             0
+9     1       1       0     0          0           2             1
+10    4       1       0     1          2           0             1
+11    4       0       1     1          3           2             0
+12    2       1       0     0          0           0             0
+13    2       0       1     1          1           0             1
+14    3       1       1     0          0           1             0
+15    0       0       1     0          0           2             1
+16    1       1       0     1          2           1             1
+17    3       1       1     1          0           1             0
+18    4       0       1     1          3           2             0
+For age Enter { SuperSeniorCitizen:0, SeniorCitizen:1, MiddleAged:2, Youth:3, Teen:4 }
+For Gender Enter { Male:0, Female:1 }
+For Family History Enter { yes:1, No:0 }
+For diet Enter { High:0, Medium:1 }
+For lifeStyle Enter { Athlete:0, Active:1, Moderate:2, Sedentary:3 }
+For cholesterol Enter { High:0, BorderLine:1, Normal:2 }
+Enter age :1
+Enter Gender :1
+Enter Family history :1
+Enter diet :1
+Enter Lifestyle :1
+Enter cholestrol :1
+None
+
+CSV:
+age	Gender	Family	diet	Lifestyle	cholestrol	heartdisease
+0	0	1	1	3	0	1
+0	1	1	1	3	0	1
+1	0	0	0	2	1	1
+4	0	1	1	3	2	0
+3	1	1	0	0	2	0
+2	0	1	1	1	0	1
+4	0	1	0	2	0	1
+0	0	1	1	3	0	1
+3	1	1	0	0	2	0
+1	1	0	0	0	2	1
+4	1	0	1	2	0	1
+4	0	1	1	3	2	0
+2	1	0	0	0	0	0
+2	0	1	1	1	0	1
+3	1	1	0	0	1	0
+0	0	1	0	0	2	1
+1	1	0	1	2	1	1
+3	1	1	1	0	1	0
+4	0	1	1       3       2       0
+            `
+    },
+    {
+        id:14,
+        name:"naive bayesian classifier",
+        code:
+            `
+import pandas as pd
+msg = pd.read_csv('document.csv', names=['message', 'label'])
+print("Total Instances of Dataset: ", msg.shape[0])
+msg['labelnum'] = msg.label.map({'pos': 1, 'neg': 0})
+X = msg.message
+y = msg.labelnum
+from sklearn.model_selection import train_test_split
+Xtrain, Xtest, ytrain, ytest = train_test_split(X, y)
+from sklearn.feature_extraction.text import CountVectorizer
+count_v = CountVectorizer()
+Xtrain_dm = count_v.fit_transform(Xtrain)
+Xtest_dm = count_v.transform(Xtest)
+df = pd.DataFrame(Xtrain_dm.toarray(),columns=count_v.get_feature_names_out())
+print(df[0:5])
+from sklearn.naive_bayes import MultinomialNB
+clf = MultinomialNB()
+clf.fit(Xtrain_dm, ytrain)
+pred = clf.predict(Xtest_dm)
+for doc, p in zip(Xtrain, pred):
+    p = 'pos' if p == 1 else 'neg'
+    print("%s -> %s" % (doc, p))
+from sklearn.metrics import accuracy_score, confusion_matrix, precision_score, recall_score
+print('Accuracy Metrics: \n')
+print('Accuracy: ', accuracy_score(ytest, pred))
+print('Recall: ', recall_score(ytest, pred))
+print('Precision: ', precision_score(ytest, pred))
+print('Confusion Matrix: \n', confusion_matrix(ytest, pred))
+
+-------------------------------------------------------------------------------------
+output:
+Total Instances of Dataset:  18
+   about  am  an  and  awesome  bad  beers  can  dance  deal  ...  to  today  \
+0      1   0   0    0        0    0      1    0      0     0  ...   0      0   
+1      0   0   0    0        0    0      0    0      0     0  ...   1      1   
+2      0   0   0    0        0    0      0    0      0     0  ...   0      0   
+3      0   0   0    0        0    0      0    0      0     0  ...   0      0   
+4      0   0   1    0        1    0      0    0      0     0  ...   0      0   
+
+   tomorrow  very  view  we  went  what  will  with  
+0         0     1     0   0     0     0     0     0  
+1         0     0     0   0     1     0     0     0  
+2         0     0     0   0     0     0     0     0  
+3         0     0     0   0     0     1     0     0  
+4         0     0     1   0     0     1     0     0  
+
+[5 rows x 48 columns]
+I feel very good about these beers -> neg
+I went to my enemy's house today -> neg
+I do not like this restaurant -> neg
+What a great holiday -> neg
+What an awesome view -> pos
+Accuracy Metrics: 
+
+Accuracy:  0.6
+Recall:  0.3333333333333333
+Precision:  1.0
+Confusion Matrix: 
+ [[2 0]
+ [2 1]]
+
+
+dataset:
+I love this sandwich	pos
+This is an amazing place	pos
+I feel very good about these beers	pos
+This is my best work	pos
+What an awesome view	pos
+I do not like this restaurant	neg
+I am tired of this stuff	neg
+I can't deal with this	neg
+He is my sworn enemy	neg
+My boss is horrible	neg
+This is an awesome place	pos
+I do not like the taste of this juice	neg
+I love to dance	pos
+I am sick and tired of this place	neg
+What a great holiday	pos
+That is a bad locality to stay	neg
+We will have good fun tomorrow	pos
+I went to my enemy's house today	neg
+            `
+    },
+    {
+        id:15,
+        name:"Locally weighted",
+        code:
+            `
+from math import ceil
+import numpy as np
+from scipy import linalg
+
+def lowess(x, y, f, iterations):
+    n = len(x)
+    r = int(ceil(f * n))
+    h = [np.sort(np.abs(x - x[i]))[r] for i in range(n)]
+    w = np.clip(np.abs((x[:, None] - x[None, :]) / h), 0.0, 1.0)
+    w = (1 - w ** 3) ** 3
+    yest = np.zeros(n)
+    delta = np.ones(n)
+    for iteration in range(iterations):
+        for i in range(n):
+            weights = delta * w[:, i]
+            b = np.array([np.sum(weights * y), np.sum(weights * y * x)])
+            A = np.array([[np.sum(weights), np.sum(weights * x)],[np.sum(weights * x), np.sum(weights * x * x)]])
+            beta = linalg.solve(A, b)
+            yest[i] = beta[0] + beta[1] * x[i]
+
+        residuals = y - yest
+        s = np.median(np.abs(residuals))
+        delta = np.clip(residuals / (6.0 * s), -1, 1)
+        delta = (1 - delta ** 2) ** 2
+
+    return yest
+
+import math
+n = 100
+x = np.linspace(0, 2 * math.pi, n)
+y = np.sin(x) + 0.3 * np.random.randn(n)
+f =0.25
+iterations=3
+yest = lowess(x, y, f, iterations)
+    
+import matplotlib.pyplot as plt
+plt.plot(x,y,"r.")
+plt.plot(x,yest,"b-")
+            `
+    },
+    {
+        id:16,
+        name:"3 Locally weighted regression",
+        code:
+            `
+import numpy as np
+import matplotlib.pyplot as plt
+def locally_weighted_regression(X, y, query_point, tau):
+    weights = np.exp(-np.sum((X - query_point) ** 2, axis=1) / (2 * tau ** 2))
+    W = np.diag(weights)
+    X_transpose = X.T
+    XTWX = X_transpose @ W @ X
+    XTWy = X_transpose @ W @ y
+    theta = np.linalg.pinv(XTWX) @ XTWy
+    prediction = query_point @ theta   
+    return prediction
+np.random.seed(42)
+X = np.linspace(0, 10, 100).reshape(-1, 1)
+y = 2 * X + 1 + np.random.normal(0, 1, size=X.shape)
+tau = 0.5
+predictions = np.zeros_like(y)
+for i in range(len(X)):
+    query_point = X[i].reshape(1, -1)
+    predictions[i] = locally_weighted_regression(X, y, query_point, tau)
+plt.scatter(X, y, color='blue', label='Original data')
+plt.plot(X, predictions, color='red', label='Locally Weighted Regression')
+plt.xlabel('X')
+plt.ylabel('y')
+plt.title('Locally Weighted Regression')
+plt.legend()
+plt.show()
+            `
+    },
 ]
 export default ans;
