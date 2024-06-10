@@ -8,6 +8,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <button><a href="./finddataset.csv" download>find-s data set</a></button>
     <button><a href="./finddataset.csv" download>Candidate Elimination data set</a></button>
     <button><a href="./tennis.csv" download>ID 3 data set</a></button>
+    <button><a href="./iris_kmeans.csv" download>k-means iris data set</a></button>
  {ans.map(CreateSection)}
  
  <Footer />
