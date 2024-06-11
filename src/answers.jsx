@@ -454,7 +454,7 @@ print("\nFinal General_h:", g_final, sep="\n")
     },
     {
         id:7,
-        name:"5-fold cross validation",
+        name:"k fold cross validation",
         code:
             `
 from sklearn import datasets
